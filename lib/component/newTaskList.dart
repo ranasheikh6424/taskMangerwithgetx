@@ -137,7 +137,7 @@ class _NewTaskListState extends State<NewTaskList> {
     });
 
     return filteredCounts.isEmpty
-        ? Center(child: Text("No task counts available."))
+        ? Center(child: Text("No task counts available !...."))
         : ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: filteredCounts.length,

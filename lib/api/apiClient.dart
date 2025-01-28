@@ -34,7 +34,7 @@ Future<bool> RegistrationRequest(FormValues) async {
     SuccessToast("Request Success");
     return true;
   } else {
-    ErrorToast("Request fail....... ! try again");
+    ErrorToast("Request fail....... ! try again,....");
     return false;
   }
 }
