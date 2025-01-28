@@ -1,38 +1,40 @@
 import 'package:flutter/material.dart';
-
 import '../../api/apiClient.dart';
 import '../../style/style.dart';
 
-class emailVerificationScreen extends StatefulWidget {
-  const emailVerificationScreen({Key? key}) : super(key: key);
+class EmailVerificationScreen extends StatefulWidget {
+  const EmailVerificationScreen({Key? key}) : super(key: key);
+
   @override
-  State<emailVerificationScreen> createState() =>
-      _emailVerificationScreenState();
+  State<EmailVerificationScreen> createState() =>
+      _EmailVerificationScreenState();
 }
 
-class _emailVerificationScreenState extends State<emailVerificationScreen> {
-  Map<String, dynamic> FormValues = {"email": ""};
-  bool Loading = false;
+class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+  Map<String, String> _formValues = {"email": ""};
+  bool _loading = false;
 
-  InputOnChange(MapKey, Textvalue) {
+  // Update method names for better consistency
+  void inputOnChange(String mapKey, String textValue) {
     setState(() {
-      FormValues.update(MapKey, (value) => Textvalue);
+      _formValues.update(mapKey, (value) => textValue);
     });
   }
 
-  FormOnSubmit() async {
-    if (FormValues['email']!.isEmpty) {
-      ErrorToast('Email Required !');
+  // Method to handle form submission
+  Future<void> _formOnSubmit() async {
+    if (_formValues['email']!.isEmpty) {
+      ErrorToast('Email Required!');
     } else {
       setState(() {
-        Loading = true;
+        _loading = true;
       });
-      bool res = await VerifyEmailRequest(FormValues['email']);
-      if (res == true) {
+      bool res = await VerifyEmailRequest(_formValues['email']!);
+      if (res) {
         Navigator.pushNamed(context, "/pinVerification");
       } else {
         setState(() {
-          Loading = false;
+          _loading = false;
         });
       }
     }
@@ -45,41 +47,39 @@ class _emailVerificationScreenState extends State<emailVerificationScreen> {
         children: [
           ScreenBackground(context),
           Container(
-              alignment: Alignment.center,
-              child: Loading
-                  ? (const Center(child: CircularProgressIndicator()))
-                  : (SingleChildScrollView(
-                      padding: EdgeInsets.all(30),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Your Email Address",
-                              style: Head1Text(colorDarkBlue)),
-                          SizedBox(height: 1),
-                          Text(
-                              "A 6 digit verification pin will send to your email address",
-                              style: Head6Text(colorLightGray)),
-                          SizedBox(height: 20),
-                          TextFormField(
-                            onChanged: (Textvalue) {
-                              InputOnChange("email", Textvalue);
-                            },
-                            decoration: AppInputDecoration("Email Address"),
-                          ),
-                          SizedBox(height: 20),
-                          Container(
-                            child: ElevatedButton(
-                              style: AppButtonStyle(),
-                              child: SuccessButtonChild('Next'),
-                              onPressed: () {
-                                FormOnSubmit();
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    )))
+            alignment: Alignment.center,
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Your Email Address",
+                            style: Head1Text(colorDarkBlue)),
+                        const SizedBox(height: 1),
+                        Text(
+                          "A 6 digit verification pin will be sent to your email address",
+                          style: Head6Text(colorLightGray),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          onChanged: (textValue) {
+                            inputOnChange("email", textValue);
+                          },
+                          decoration: AppInputDecoration("Email Address"),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          style: AppButtonStyle(),
+                          onPressed: _formOnSubmit,
+                          child: SuccessButtonChild('Next'),
+                        ),
+                      ],
+                    ),
+                  ),
+          ),
         ],
       ),
     );

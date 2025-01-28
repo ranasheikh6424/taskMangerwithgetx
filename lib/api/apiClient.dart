@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:taskmanager/Style/Style.dart';
 import 'package:http/http.dart' as http;
+import 'package:taskmanager/modals/taskCountMOdal.dart';
 
 import '../utility/utility.dart';
 
@@ -38,13 +39,31 @@ Future<bool> RegistrationRequest(FormValues) async {
   }
 }
 
-Future<bool> VerifyEmailRequest(Email) async {
-  var URL = Uri.parse("$BaseURL/RecoverVerifyEmail/$Email");
+Future<Map<String, String>> ProfileUpdateRequest(FormValues) async {
+  var URL = Uri.parse("${BaseURL}/profileUpdate");
+  var PostBody = json.encode(FormValues);
+  var response = await http.post(URL, headers: RequestHeader, body: PostBody);
+  var ResultCode = response.statusCode;
+  var ResultBody = json.decode(response.body);
+
+  if (ResultCode == 200 && ResultBody['status'] == "success") {
+    SuccessToast("Request Success");
+    // Returning the updated user data
+    return ResultBody[
+        'user']; // Assuming the response contains updated user data
+  } else {
+    ErrorToast("Request fail! Try again");
+    return {}; // Returning an empty map in case of failure
+  }
+}
+
+Future<bool> VerifyEmailRequest(email) async {
+  var URL = Uri.parse("${BaseURL}/RecoverVerifyEmail/${email}");
   var response = await http.get(URL, headers: RequestHeader);
   var ResultCode = response.statusCode;
   var ResultBody = json.decode(response.body);
   if (ResultCode == 200 && ResultBody['status'] == "success") {
-    await WriteEmailVerification(Email);
+    await WriteEmailVerification(email);
     SuccessToast("Request Success");
     return true;
   } else {
@@ -101,6 +120,37 @@ Future<List> TaskListRequest(Status) async {
     return ResultBody['data'];
   } else {
     ErrorToast("Request fail ! try again");
+    return [];
+  }
+}
+
+Future<List<TaskCountModal>> TaskStatusCountListRequest() async {
+  var URL = Uri.parse("${BaseURL}/taskStatusCount");
+  String? token = await ReadUserData("token");
+
+  var RequestHeaderWithToken = {
+    "Content-Type": "application/json",
+    "token": '$token'
+  };
+
+  try {
+    var response = await http.get(URL, headers: RequestHeaderWithToken);
+    var ResultCode = response.statusCode;
+    var ResultBody = json.decode(response.body);
+
+    if (ResultCode == 200 && ResultBody['status'] == "success") {
+      // Parse the response into a list of TaskStatusModal
+      List<TaskCountModal> data = (ResultBody['data'] as List)
+          .map((item) => TaskCountModal.fromJson(item))
+          .toList();
+
+      return data;
+    } else {
+      ErrorToast("Request failed! Please try again.");
+      return [];
+    }
+  } catch (e) {
+    ErrorToast("An error occurred! $e");
     return [];
   }
 }

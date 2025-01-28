@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../style/style.dart';
+import '../../utility/utility.dart';
 
-class splashScreen extends StatefulWidget {
-  const splashScreen({Key? key}) : super(key: key);
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<splashScreen> createState() => _splashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _splashScreenState extends State<splashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    moveToNextScreen();
+  }
+
   Future<void> moveToNextScreen() async {
+    String? token = await ReadUserData('token');
     await Future.delayed(const Duration(seconds: 3));
-    Navigator.pushNamedAndRemoveUntil(context,'/login',(_)=>false);
+    if (token == null) {
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    } else {
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    }
   }
 
   @override
@@ -22,10 +34,13 @@ class _splashScreenState extends State<splashScreen> {
         children: [
           ScreenBackground(context),
           Container(
-            padding: EdgeInsets.all(30),
+            padding: const EdgeInsets.all(30),
             child: Center(
-                child: SvgPicture.asset("assets/images/logo.svg",
-                    alignment: Alignment.center)),
+              child: SvgPicture.asset(
+                "assets/images/logo.svg",
+                alignment: Alignment.center,
+              ),
+            ),
           )
         ],
       ),
