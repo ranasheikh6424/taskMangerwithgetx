@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         '/pinVerification': (context) => const pinVerificationScreen(),
         '/setPassword': (context) => const setPasswordScreen(),
         '/taskCreate': (context) => const taskCreateScreen(),
-        '/updateProfile': (context) => const UpdateProfileScreen(),
+        '/update-profile-screen': (context) => const UpdateProfileScreen(),
       },
     );
   }

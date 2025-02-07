@@ -1,18 +1,17 @@
-allprojects {
+buildscript {
     repositories {
         google()
         mavenCentral()
     }
+    dependencies {
+        classpath("com.android.tools.build:gradle:7.x.x") // Correct version
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.x.x") // Correct version
+    }
 }
 
-rootProject.buildDir = "../build"
-subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(":app")
+plugins {
+    id "com.android.application" // Or other plugins
+    id "kotlin-android"        // Or other plugins
 }
 
-tasks.register("clean", Delete) {
-    delete rootProject.buildDir
-}
+// ... rest of the build.gradle file ...

@@ -34,26 +34,23 @@ Future<bool> RegistrationRequest(FormValues) async {
     SuccessToast("Request Success");
     return true;
   } else {
-    ErrorToast("Request fail....... ! try again,....");
+    ErrorToast("Request fail ! try again");
     return false;
   }
 }
 
-Future<Map<String, String>> ProfileUpdateRequest(FormValues) async {
+Future<bool> ProfileUpdateRequest(formValues) async {
   var URL = Uri.parse("${BaseURL}/profileUpdate");
-  var PostBody = json.encode(FormValues);
+  var PostBody = json.encode(formValues);
   var response = await http.post(URL, headers: RequestHeader, body: PostBody);
   var ResultCode = response.statusCode;
   var ResultBody = json.decode(response.body);
-
   if (ResultCode == 200 && ResultBody['status'] == "success") {
     SuccessToast("Request Success");
-    // Returning the updated user data
-    return ResultBody[
-        'user']; // Assuming the response contains updated user data
+    return true;
   } else {
-    ErrorToast("Request fail! Try again");
-    return {}; // Returning an empty map in case of failure
+    ErrorToast("Request fail....... ! try again,....");
+    return false;
   }
 }
 
