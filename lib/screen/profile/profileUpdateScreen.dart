@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../api/apiClient.dart';
 import '../../style/style.dart';
-// profile update screen section here.........
+// profile update screen section code here
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({Key? key}) : super(key: key);
   @override
