@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../api/apiClient.dart';
+import '../../controller/getxController.dart';
 import '../../style/style.dart';
 import '../../utility/utility.dart';
 
@@ -11,6 +13,7 @@ class pinVerificationScreen extends StatefulWidget {
 }
 
 class _pinVerificationScreenState extends State<pinVerificationScreen> {
+  final ApiController apiController = Get.find<ApiController>();
   Map<String, String> FormValues = {"otp": ""};
   bool Loading = false;
 
@@ -28,9 +31,10 @@ class _pinVerificationScreenState extends State<pinVerificationScreen> {
         Loading = true;
       });
       String? emailAddress = await ReadUserData('EmailVerification');
-      bool res = await VerifyOTPRequest(emailAddress, FormValues['otp']);
+      bool res = await apiController.verifyOtpRequest(
+          emailAddress!, FormValues['otp']!);
       if (res == true) {
-        Navigator.pushNamed(context, "/setPassword");
+        Get.toNamed("/setPassword");
       } else {
         setState(() {
           Loading = false;

@@ -1,77 +1,42 @@
 import 'package:flutter/material.dart';
-import '../../component/TaskAppBar.dart';
-import '../../component/appBottomNav.dart';
-import '../../component/cancelTaskList.dart';
-import '../../component/completedTaskList.dart';
-import '../../component/newTaskList.dart';
-import '../../component/progresstaskList.dart';
-import '../../utility/utility.dart';
+import 'package:get/get.dart';
+import 'package:taskmanager/component/TaskAppBar.dart';
+import 'package:taskmanager/component/appBottomNav.dart';
+import 'package:taskmanager/controller/homeController.dart';
 
-class homeScreen extends StatefulWidget {
-  const homeScreen({Key? key}) : super(key: key);
-
-  @override
-  State<homeScreen> createState() => _homeScreenState();
-}
-
-class _homeScreenState extends State<homeScreen> {
-  int TabIndex = 0;
-  Map<String, String> FormValues = {
-    "email": "",
-    "firstName": "",
-    "lastName": "",
-    "photo": DefaultProfilePic
-  };
-
-  // Add taskCountScreen as a new tab option
-  final widgetOptions = [
-    NewTaskList(),
-    progressTaskList(),
-    completedTaskList(),
-    cancelTaskList(),
-    // New task count screen added
-  ];
-
-  onItemTapped(int index) {
-    setState(() {
-      TabIndex = index;
-    });
-  }
-
-  ReadAppBarData() async {
-    String? email = await ReadUserData('email' ?? '');
-    String? firstName = await ReadUserData('firstName' ?? '');
-    String? lastName = await ReadUserData('lastName' ?? '');
-    String? photo = await ReadUserData('photo' ?? '');
-    setState(() {
-      FormValues = {
-        "email": '$email',
-        "firstName": '$firstName',
-        "lastName": '$lastName',
-        "photo": photo ?? DefaultProfilePic,
-      };
-    });
-  }
-
-  @override
-  void initState() {
-    ReadAppBarData();
-    super.initState();
-  }
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Bind the HomeController to the screen
+    final HomeController controller = Get.put(HomeController());
+
+    // Read app data when the screen is loaded
+    controller.readAppData();
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, "/taskCreate");
+          // Navigate to task create screen using GetX
+          Get.toNamed('/taskCreate');
         },
         child: const Icon(Icons.add),
       ),
-      appBar: TaskAppBar(context, FormValues),
-      body: widgetOptions
-          .elementAt(TabIndex), // Dynamically display selected tab screen
-      bottomNavigationBar: appBottomNav(TabIndex, onItemTapped),
+      appBar: TaskAppBar(context,
+          controller.formValues.value), // Fix here: remove Obx around appBar
+      body: Obx(() {
+        // Dynamically display selected tab screen based on tabIndex
+        return controller.tabIndex.value < controller.widgetOptions.length
+            ? controller.widgetOptions.elementAt(controller.tabIndex.value)
+            : Container(); // Fallback if index out of range
+      }),
+      bottomNavigationBar: Obx(() {
+        // Watch for tab index change and update bottom nav
+        return appBottomNav(controller.tabIndex.value, (index) {
+          controller.updateTabIndex(index);
+        });
+      }),
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../api/apiClient.dart';
+import '../../controller/getxController.dart';
 import '../../style/style.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
@@ -11,6 +13,7 @@ class EmailVerificationScreen extends StatefulWidget {
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+  final ApiController apiController = Get.find<ApiController>();
   Map<String, String> _formValues = {"email": ""};
   bool _loading = false;
 
@@ -29,9 +32,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       setState(() {
         _loading = true;
       });
-      bool res = await VerifyEmailRequest(_formValues['email']!);
+      bool res = await apiController.verifyEmailRequest(_formValues['email']!);
       if (res) {
-        Navigator.pushNamed(context, "/pinVerification");
+        Get.toNamed('/pinVerification');
       } else {
         setState(() {
           _loading = false;

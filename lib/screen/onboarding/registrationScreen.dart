@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_common/get_reset.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../api/apiClient.dart';
+import '../../controller/getxController.dart';
 import '../../style/style.dart';
 
 class registrationScreen extends StatefulWidget {
@@ -9,6 +13,8 @@ class registrationScreen extends StatefulWidget {
 }
 
 class _registrationScreenState extends State<registrationScreen> {
+  final ApiController apiController = Get.find<ApiController>();
+
   Map<String, String> FormValues = {
     "email": "",
     "firstName": "",
@@ -27,15 +33,15 @@ class _registrationScreenState extends State<registrationScreen> {
   }
 
   FormOnSubmit() async {
-    if (FormValues['email']!.length == 0) {
+    if (FormValues['email']!.isEmpty) {
       ErrorToast('Email Required !');
-    } else if (FormValues['firstName']!.length == 0) {
+    } else if (FormValues['firstName']!.isEmpty) {
       ErrorToast('First Name Required !');
-    } else if (FormValues['lastName']!.length == 0) {
+    } else if (FormValues['lastName']!.isEmpty) {
       ErrorToast('Last Name Required !');
-    } else if (FormValues['mobile']!.length == 0) {
+    } else if (FormValues['mobile']!.isEmpty) {
       ErrorToast('Mobile No Required !');
-    } else if (FormValues['password']!.length == 0) {
+    } else if (FormValues['password']!.isEmpty) {
       ErrorToast('Mobile No Required !');
     } else if (FormValues['password'] != FormValues['cpassword']) {
       ErrorToast('Confirm password should be same!');
@@ -43,9 +49,9 @@ class _registrationScreenState extends State<registrationScreen> {
       setState(() {
         Loading = true;
       });
-      bool res = await RegistrationRequest(FormValues);
+      bool res = await apiController.registrationRequest(FormValues);
       if (res == true) {
-        Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+        Get.offAllNamed("/login");
       } else {
         setState(() {
           Loading = false;

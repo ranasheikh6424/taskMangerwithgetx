@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../api/apiClient.dart';
+import '../../controller/getxController.dart';
 import '../../style/style.dart';
 
 class loginScreen extends StatefulWidget {
@@ -9,6 +12,7 @@ class loginScreen extends StatefulWidget {
 }
 
 class _loginScreenState extends State<loginScreen> {
+  final ApiController apiController = Get.find<ApiController>();
   Map<String, String> FormValues = {"email": "", "password": ""};
   bool Loading = false;
 
@@ -27,9 +31,9 @@ class _loginScreenState extends State<loginScreen> {
       setState(() {
         Loading = true;
       });
-      bool res = await LoginRequest(FormValues);
+      bool res = await apiController.loginRequest(FormValues);
       if (res == true) {
-        Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+        Get.offAllNamed('/');
       } else {
         setState(() {
           Loading = false;

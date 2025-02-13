@@ -1,16 +1,25 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:taskmanager/style/style.dart';
 import 'package:taskmanager/utility/utility.dart';
 
-AppBar TaskAppBar(BuildContext context, Map<String, String> FormValues) {
+import '../controller/ProfileController.dart';
+
+AppBar TaskAppBar(BuildContext context, Map<String, String> value) {
+  // Use GetX to fetch the ProfileController
+  final ProfileController controller = Get.find<ProfileController>();
+
+  // Fetch FormValues from the controller
+  var formValues = controller.formValues;
+
+  // Get the profile image
   Uint8List? profileImage;
-  if (FormValues['photo'] != null && FormValues['photo']!.isNotEmpty) {
+  if (formValues['photo'] != null && formValues['photo']!.isNotEmpty) {
     try {
-      profileImage = ShowBase64Image(
-          FormValues['photo']); // Ensure `photo` is valid base64.
+      profileImage = ShowBase64Image(formValues['photo']);
     } catch (e) {
-      profileImage = null; // Fallback in case of invalid base64.
+      profileImage = null;
     }
   }
 
@@ -48,13 +57,13 @@ AppBar TaskAppBar(BuildContext context, Map<String, String> FormValues) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${FormValues['firstName'] ?? 'First Name'} ${FormValues['lastName'] ?? 'Last Name'}',
+                  '${formValues['firstName'] ?? 'First Name'} ${formValues['lastName'] ?? 'Last Name'}',
                   style: Head7Text(colorWhite),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  FormValues['email'] ?? 'Email not provided',
+                  formValues['email'] ?? 'Email not provided',
                   style: Head9Text(colorWhite),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

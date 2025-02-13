@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../style/style.dart';
 import '../../utility/utility.dart';
 
@@ -21,9 +23,11 @@ class _SplashScreenState extends State<SplashScreen> {
     String? token = await ReadUserData('token');
     await Future.delayed(const Duration(seconds: 3));
     if (token == null) {
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      //Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      Get.offAllNamed('/login');
     } else {
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      //Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      Get.offAllNamed('/');
     }
   }
 

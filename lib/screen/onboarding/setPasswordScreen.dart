@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../api/apiClient.dart';
+import '../../controller/getxController.dart';
 import '../../style/style.dart';
 import '../../utility/utility.dart';
 
@@ -10,6 +13,8 @@ class setPasswordScreen extends StatefulWidget {
 }
 
 class _setPasswordScreenState extends State<setPasswordScreen> {
+  final ApiController apiController = Get.find<ApiController>();
+
   Map<String, String> FormValues = {
     "email": "",
     "OTP": "",
@@ -46,9 +51,10 @@ class _setPasswordScreenState extends State<setPasswordScreen> {
       setState(() {
         Loading = true;
       });
-      bool res = await SetPasswordRequest(FormValues);
+      bool res = await apiController.setPasswordRequest(FormValues);
       if (res == true) {
-        Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+        //Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+        Get.offAllNamed('/login');
       } else {
         setState(() {
           Loading = false;
